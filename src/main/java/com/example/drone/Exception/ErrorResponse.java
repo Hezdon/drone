@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ErrorResponse {
 
-    String status, responseCode, responseDesc;
+    String status, responseCode, responseMessage;
 }

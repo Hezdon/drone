@@ -27,7 +27,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
             HttpStatus httpStatus, Exception ex, WebRequest request) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .status("")
-                .responseDesc(ex.getMessage())
+                .responseMessage(ex.getMessage())
                 .responseCode("")
                 .build();
         return handleExceptionInternal(ex, errorResponse,
