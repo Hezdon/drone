@@ -2,24 +2,23 @@ package com.example.drone.model;
 
 import com.example.drone.dto.DroneRequest;
 import com.example.drone.util.Const;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Collections;
 
 @Data
 @Entity
 @Table(name = "drone_model")
+@AllArgsConstructor
 public class DroneModel {
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "drone_number", sequenceName = "drone_number")
     @Id
     long id;
     String serialNumber, model, state;
-    int weight;
-    float batteryCapacity;
+    float batteryCapacity, weight;
 
     public DroneModel(DroneRequest request, Const.DRONE_STATE state){
         serialNumber = request.getSerialNumber();
@@ -27,5 +26,13 @@ public class DroneModel {
         batteryCapacity = request.getBatteryCapacity();
         model = request.getModel();
         this.state = state.toString();
+    }
+
+    public DroneModel(String serialNumber, String model, String state, float weight, float batteryCapacity){
+        this.serialNumber = serialNumber;
+        this.weight = weight;
+        this.batteryCapacity = batteryCapacity;
+        this.model = model;
+        this.state = state;
     }
 }
