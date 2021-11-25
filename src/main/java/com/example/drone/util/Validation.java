@@ -21,9 +21,9 @@ public class Validation {
     }
 
     public static String validateLogMedication(MedicationRequest request){
-        if(request.getName().matches("^[A-Za-z0-9_-]*$"))
+        if(!request.getName().matches("^[A-Za-z0-9_-]*$"))
             return "Medication name can only contain letters, numbers, ‘-‘, ‘_’";
-        if(request.getCode().matches("^[A-Z0-9_]*$"))
+        if(!request.getCode().matches("^[A-Z0-9_]*$"))
             return "Medication code can only contain upper case letters, numbers, ‘_’";
         if(0.01f > request.getWeight())
             return "Medication weight can not be less than 0.01 gram";
