@@ -60,13 +60,33 @@ public class DispatchController {
     public ResponseEntity<?> findAllMedicationOnDrone(@PathVariable("serialNumber") String serialNumber){
 
         GenericResponse response = dispatchService.loadedMedicationOnDrone(serialNumber);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        if(Const.RESPONSECODE[0].equalsIgnoreCase(response.getResponseCode()))
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @PostMapping("/drone/load")
     public ResponseEntity<?> loadDrone(@RequestBody @Valid LoadDroneRquest request){
 
         GenericResponse response = dispatchService.loadDrone(request);
+        if(Const.RESPONSECODE[0].equalsIgnoreCase(response.getResponseCode()))
+            return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @GetMapping("/drone/idle")
+    public ResponseEntity<?> getDronebyState(){
+
+        GenericResponse response = dispatchService.getDroneByState(Const.DRONE_STATE.IDLE.toString());
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/drone/battery/{serialNumber}")
+    public ResponseEntity<?> getDroneBatteryLevel(@PathVariable("serialNumber") String serialNumber){
+
+        GenericResponse response = dispatchService.getDroneBatteryLevel(serialNumber);
         if(Const.RESPONSECODE[0].equalsIgnoreCase(response.getResponseCode()))
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 

@@ -102,8 +102,7 @@ public class DispatchService {
         if(Const.BATTERY_LOW > drone.getBatteryCapacity())
             return new GenericResponse(Const.RESPONSECODE[1], "Battery level below 25%", Const.FAILED);
 
-        if(!Const.DRONE_STATE.IDLE.toString().equalsIgnoreCase(drone.getState())
-            && !Const.DRONE_STATE.LOADING.toString().equalsIgnoreCase(drone.getState()))
+        if(!Const.DRONE_STATE.IDLE.toString().equalsIgnoreCase(drone.getState()))
             return new GenericResponse(Const.RESPONSECODE[1], "Drone can not load medication", Const.FAILED);
 
         if(!Const.MEDICATION_STATE.AVAILABLE.toString().equalsIgnoreCase(medication.getStatus()))
@@ -133,5 +132,18 @@ public class DispatchService {
         List<MedicationModel> medicationModels = dbQueryInf.findAllMedicationbyDrone(droneModel.get().getId(), Const.ACTIVE);
 
         return new GenericResponse(Const.RESPONSECODE[0], Const.SUCCESSFUL , Const.SUCCESSFUL, medicationModels);
+    }
+
+    public GenericResponse getDroneByState(String state){
+        List<DroneModel> droneModel = droneRepository.findByState(state);
+        return new GenericResponse(Const.RESPONSECODE[0], Const.SUCCESSFUL , Const.SUCCESSFUL, droneModel);
+    }
+
+    public GenericResponse getDroneBatteryLevel(String serialNumber){
+        Optional<DroneModel> droneModel = droneRepository.findBySerialNumber(serialNumber);
+        if(!droneModel.isPresent())
+            return new GenericResponse(Const.RESPONSECODE[1], "Invalid drone serial number", Const.FAILED);
+
+        return new GenericResponse(Const.RESPONSECODE[0], Const.SUCCESSFUL , Const.SUCCESSFUL, droneModel.get().getBatteryCapacity());
     }
 }
