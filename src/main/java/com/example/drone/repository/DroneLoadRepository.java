@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface DroneLoadRepository extends JpaRepository<DroneLoad, Long> {
-    List<DroneLoad> findByDroneIdAndStatus();
 }

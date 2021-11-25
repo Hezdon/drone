@@ -1,4 +1,4 @@
-package com.example.drone.Exception;
+package com.example.drone.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

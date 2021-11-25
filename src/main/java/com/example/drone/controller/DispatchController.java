@@ -56,6 +56,13 @@ public class DispatchController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/drone/medication/{serialNumber}")
+    public ResponseEntity<?> findAllMedicationOnDrone(@PathVariable("serialNumber") String serialNumber){
+
+        GenericResponse response = dispatchService.loadedMedicationOnDrone(serialNumber);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/drone/load")
     public ResponseEntity<?> loadDrone(@RequestBody @Valid LoadDroneRquest request){
 

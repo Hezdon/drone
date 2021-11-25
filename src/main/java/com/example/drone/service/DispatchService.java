@@ -1,5 +1,6 @@
 package com.example.drone.service;
 
+import com.example.drone.dbInterface.DbQueryInf;
 import com.example.drone.dto.DroneRequest;
 import com.example.drone.dto.GenericResponse;
 import com.example.drone.dto.LoadDroneRquest;
@@ -29,6 +30,8 @@ public class DispatchService {
     MedicationRespository medicationRespository;
     @Autowired
     DroneLoadRepository droneLoadRepository;
+    @Autowired
+    DbQueryInf dbQueryInf;
     public GenericResponse logDrone(DroneRequest request){
 
         //validate Drone properties
@@ -94,24 +97,27 @@ public class DispatchService {
         if(!medicationModel.isPresent())
             return new GenericResponse(Const.RESPONSECODE[1], "Invalid medication code", Const.FAILED);
 
-        if(Const.BATTERY_LOW > droneModel.get().getBatteryCapacity())
+        DroneModel drone = droneModel.get();
+        MedicationModel medication = medicationModel.get();
+        if(Const.BATTERY_LOW > drone.getBatteryCapacity())
             return new GenericResponse(Const.RESPONSECODE[1], "Battery level below 25%", Const.FAILED);
 
-        if(!Const.DRONE_STATE.IDLE.toString().equalsIgnoreCase(droneModel.get().getState())
-            && !Const.DRONE_STATE.LOADING.toString().equalsIgnoreCase(droneModel.get().getState()))
+        if(!Const.DRONE_STATE.IDLE.toString().equalsIgnoreCase(drone.getState())
+            && !Const.DRONE_STATE.LOADING.toString().equalsIgnoreCase(drone.getState()))
             return new GenericResponse(Const.RESPONSECODE[1], "Drone can not load medication", Const.FAILED);
 
-        if(!Const.MEDICATION_STATE.AVAILABLE.toString().equalsIgnoreCase(medicationModel.get().getStatus()))
+        if(!Const.MEDICATION_STATE.AVAILABLE.toString().equalsIgnoreCase(medication.getStatus()))
             return new GenericResponse(Const.RESPONSECODE[1], "Medication is not available for loading", Const.FAILED);
 
-        if(medicationModel.get().getWeight() > droneModel.get().getAvailableWeight())
+        if(medication.getWeight() > drone.getAvailableWeight())
             return new GenericResponse(Const.RESPONSECODE[1], "Drone available weight is lesser", Const.FAILED);
 
-        DroneLoad droneLoad = new DroneLoad(droneModel.get(), medicationModel.get());
+        DroneLoad droneLoad = new DroneLoad(drone, medication);
         droneLoadRepository.save(droneLoad);
 
-        droneModel.get().setState(Const.DRONE_STATE.LOADING.toString());
-        droneRepository.save(droneModel.get());
+        drone.setState(Const.DRONE_STATE.LOADING.toString());
+        drone.setAvailableWeight(drone.getAvailableWeight() - medication.getWeight());
+        droneRepository.save(drone);
 
         medicationModel.get().setStatus(Const.MEDICATION_STATE.ONLOAD.toString());
         medicationRespository.save(medicationModel.get());
@@ -119,7 +125,13 @@ public class DispatchService {
         return new GenericResponse(Const.RESPONSECODE[0], request.getMedicationCode()+" loaded on "+request.getDroneSerialNumber(), Const.SUCCESSFUL);
     }
 
-    public List<MedicationModel> loadedMedicationOfDrone(long droneId){
-        return droneLoadRepository.findByDroneIdAndStatus(droneId, Const.ACTIVE);
+    public GenericResponse loadedMedicationOnDrone(String serialNumber){
+        Optional<DroneModel> droneModel = droneRepository.findBySerialNumber(serialNumber);
+        if(!droneModel.isPresent())
+            return new GenericResponse(Const.RESPONSECODE[1], "Invalid drone serial number", Const.FAILED);
+
+        List<MedicationModel> medicationModels = dbQueryInf.findAllMedicationbyDrone(droneModel.get().getId(), Const.ACTIVE);
+
+        return new GenericResponse(Const.RESPONSECODE[0], Const.SUCCESSFUL , Const.SUCCESSFUL, medicationModels);
     }
 }

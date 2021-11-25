@@ -1,4 +1,4 @@
-package com.example.drone.Exception;
+package com.example.drone.exception;
 
 
 import org.springframework.http.HttpHeaders;
