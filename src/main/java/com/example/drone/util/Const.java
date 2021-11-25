@@ -8,7 +8,7 @@ public class Const {
         IDLE, LOADING, LOADED, DELIVERING, DELIVERED, RETURNING;
     }
 
-    public static final List<String> DRONE_MODEL = List.of("Lightweight, Middleweight, Cruiserweight, Heavyweight");
+    public static final List<String> DRONE_MODEL = List.of("Lightweight, Middleweight, Cruiserweight, Heavyweight".split(","));
     public static final String FAILED = "Failed";
     public static final String SUCCESSFUL = "Successful";
 

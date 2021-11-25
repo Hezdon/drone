@@ -14,7 +14,7 @@ public class DroneRequest {
     @NotBlank(message = "Model can not be empty")
     String model;
     @NotBlank(message = "Weight can not be empty")
-    int weight;
+    float weight;
     @NotBlank(message = "Battery can not be empty")
     float batteryCapacity;
 }

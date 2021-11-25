@@ -14,12 +14,12 @@ import java.util.Collections;
 @AllArgsConstructor
 public class DroneModel {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "drone_number", sequenceName = "drone_number")
     @Id
     long id;
     String serialNumber, model, state;
     float batteryCapacity, weight;
 
+    public DroneModel(){}
     public DroneModel(DroneRequest request, Const.DRONE_STATE state){
         serialNumber = request.getSerialNumber();
         weight = request.getWeight();
