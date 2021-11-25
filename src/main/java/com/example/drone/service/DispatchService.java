@@ -146,4 +146,13 @@ public class DispatchService {
 
         return new GenericResponse(Const.RESPONSECODE[0], Const.SUCCESSFUL , Const.SUCCESSFUL, droneModel.get().getBatteryCapacity());
     }
+
+    public void batteryCheck(DroneModel droneModel){
+        droneRepository.save(droneModel);
+        if(Const.DRONE_STATE.DELIVERED.toString().equalsIgnoreCase(droneModel.getState())){
+            dbQueryInf.updateMedicationAndDroneLoadStatus(droneModel.getId());
+
+        }
+    }
+
 }

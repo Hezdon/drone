@@ -2,6 +2,7 @@ package com.example.drone.util;
 
 import com.example.drone.dto.DroneRequest;
 import com.example.drone.dto.MedicationRequest;
+import com.example.drone.model.DroneModel;
 
 
 public class Validation {
@@ -30,5 +31,37 @@ public class Validation {
 
         return null;
 
+    }
+
+    public static DroneModel moveDroneToNextState(DroneModel droneModel){
+        if(Const.DRONE_STATE.LOADING.toString().equalsIgnoreCase(droneModel.getState())){
+            droneModel.setState(Const.DRONE_STATE.LOADED.toString());
+            return droneModel;
+        }
+
+        if(Const.DRONE_STATE.LOADED.toString().equalsIgnoreCase(droneModel.getState())){
+            droneModel.setState(Const.DRONE_STATE.DELIVERING.toString());
+            droneModel.setBatteryCapacity(droneModel.getBatteryCapacity() - Const.REDUCE_BATTERY_LEVEL);
+            return droneModel;
+        }
+
+        if(Const.DRONE_STATE.DELIVERING.toString().equalsIgnoreCase(droneModel.getState())){
+            droneModel.setState(Const.DRONE_STATE.DELIVERED.toString());
+            return droneModel;
+        }
+
+        if(Const.DRONE_STATE.DELIVERED.toString().equalsIgnoreCase(droneModel.getState())){
+            droneModel.setState(Const.DRONE_STATE.RETURNING.toString());
+            droneModel.setAvailableWeight(droneModel.getWeight());
+            droneModel.setBatteryCapacity(droneModel.getBatteryCapacity() - Const.REDUCE_BATTERY_LEVEL);
+            return droneModel;
+        }
+
+        if(Const.DRONE_STATE.RETURNING.toString().equalsIgnoreCase(droneModel.getState())){
+            droneModel.setState(Const.DRONE_STATE.IDLE.toString());
+            return droneModel;
+        }
+
+        return droneModel;
     }
 }

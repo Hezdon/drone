@@ -8,9 +8,11 @@ import com.example.drone.model.DroneModel;
 import com.example.drone.model.MedicationModel;
 import com.example.drone.service.DispatchService;
 import com.example.drone.util.Const;
+import com.example.drone.util.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -91,6 +93,16 @@ public class DispatchController {
             return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
 
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @Scheduled(fixedDelay = 30000) // run every 5 mins
+    public void periodicTask() {
+        List<DroneModel> droneModels = dispatchService.findAllDrone();
+
+        droneModels.forEach(droneModel -> {
+            droneModel = Validation.moveDroneToNextState(droneModel);
+            dispatchService.batteryCheck(droneModel);
+        });
     }
 
 }
