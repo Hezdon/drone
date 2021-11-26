@@ -15,11 +15,15 @@ import com.example.drone.repository.DroneRepository;
 import com.example.drone.repository.MedicationRespository;
 import com.example.drone.util.Const;
 import com.example.drone.util.Validation;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +40,10 @@ public class DispatchService {
     DbQueryInf dbQueryInf;
     @Autowired
     BatteryHistoryRepo batteryHistoryRepo;
+    ServletContext servletContext;
+    DispatchService(ServletContext servletContext){
+        this.servletContext = servletContext;
+    }
     public GenericResponse logDrone(DroneRequest request){
 
         //validate Drone properties
@@ -76,6 +84,11 @@ public class DispatchService {
 
         try {
             //saving medication on database
+            byte[] imageByte= Base64.decodeBase64(request.getImage());
+
+            String directory=servletContext.getRealPath("/")+request.getCode()+".jpg";
+            new FileOutputStream(directory).write(imageByte);
+            medicationModel.setImage(directory);
             medicationRespository.save(medicationModel);
             return new GenericResponse(Const.RESPONSECODE[0], "saved", Const.SUCCESSFUL);
         }

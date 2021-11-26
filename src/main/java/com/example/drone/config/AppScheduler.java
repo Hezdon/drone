@@ -17,7 +17,7 @@ import java.util.List;
 public class AppScheduler {
     @Autowired
     DispatchService dispatchService;
-    @Scheduled(fixedDelay = 3000) // run every 5 mins
+    @Scheduled(fixedDelay = 30000) // run every 5 mins
     public void periodicTask() {
         List<DroneModel> droneModels = dispatchService.findAllDrone();
 

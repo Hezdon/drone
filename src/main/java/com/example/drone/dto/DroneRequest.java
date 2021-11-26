@@ -17,4 +17,5 @@ public class DroneRequest {
     float weight;
     @NotBlank(message = "Battery can not be empty")
     float batteryCapacity;
+
 }
