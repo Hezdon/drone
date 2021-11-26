@@ -15,6 +15,7 @@ import com.example.drone.repository.DroneRepository;
 import com.example.drone.repository.MedicationRespository;
 import com.example.drone.util.Const;
 import com.example.drone.util.Validation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class DispatchService {
     @Autowired
     DroneRepository droneRepository;
@@ -167,6 +169,7 @@ public class DispatchService {
     public void batteryCheck(DroneModel droneModel){
         droneRepository.save(droneModel);
         BatteryHistory batteryHistory = new BatteryHistory(droneModel);
+        log.info(" >>> logging battery level : {}", batteryHistory);
         batteryHistoryRepo.save(batteryHistory);
         if(Const.DRONE_STATE.DELIVERED.toString().equalsIgnoreCase(droneModel.getState())){
             dbQueryInf.updateMedicationAndDroneLoadStatus(droneModel.getId());
