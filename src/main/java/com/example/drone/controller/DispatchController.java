@@ -95,14 +95,6 @@ public class DispatchController {
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @Scheduled(fixedDelay = 30000) // run every 5 mins
-    public void periodicTask() {
-        List<DroneModel> droneModels = dispatchService.findAllDrone();
 
-        droneModels.forEach(droneModel -> {
-            droneModel = Validation.moveDroneToNextState(droneModel);
-            dispatchService.batteryCheck(droneModel);
-        });
-    }
 
 }

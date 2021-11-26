@@ -24,10 +24,20 @@ CREATE TABLE drone_model (
 DROP TABLE IF EXISTS drone_load;
 CREATE TABLE drone_load (
         id bigint AUTO_INCREMENT  PRIMARY KEY,
-        drone_id VARCHAR (100) NOT NULL,
-        medication_id VARCHAR (50) NOT NULL,
+        drone_id bigint NOT NULL,
+        medication_id bigint NOT NULL,
         medication_weight decimal(5,2) not null,
         status VARCHAR (50) null
+);
+
+DROP TABLE IF EXISTS battery_history;
+CREATE TABLE battery_history (
+        id bigint AUTO_INCREMENT  PRIMARY KEY,
+        drone_id bigint NOT NULL,
+        serial_number VARCHAR (100) NOT NULL,
+        state VARCHAR (50) NOT NULL,
+        battery_capacity decimal(5,2) not null,
+        created_on datetime null
 );
 
 

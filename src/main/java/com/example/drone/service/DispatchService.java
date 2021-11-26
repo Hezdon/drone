@@ -5,9 +5,11 @@ import com.example.drone.dto.DroneRequest;
 import com.example.drone.dto.GenericResponse;
 import com.example.drone.dto.LoadDroneRquest;
 import com.example.drone.dto.MedicationRequest;
+import com.example.drone.model.BatteryHistory;
 import com.example.drone.model.DroneLoad;
 import com.example.drone.model.DroneModel;
 import com.example.drone.model.MedicationModel;
+import com.example.drone.repository.BatteryHistoryRepo;
 import com.example.drone.repository.DroneLoadRepository;
 import com.example.drone.repository.DroneRepository;
 import com.example.drone.repository.MedicationRespository;
@@ -32,6 +34,8 @@ public class DispatchService {
     DroneLoadRepository droneLoadRepository;
     @Autowired
     DbQueryInf dbQueryInf;
+    @Autowired
+    BatteryHistoryRepo batteryHistoryRepo;
     public GenericResponse logDrone(DroneRequest request){
 
         //validate Drone properties
@@ -149,6 +153,8 @@ public class DispatchService {
 
     public void batteryCheck(DroneModel droneModel){
         droneRepository.save(droneModel);
+        BatteryHistory batteryHistory = new BatteryHistory(droneModel);
+        batteryHistoryRepo.save(batteryHistory);
         if(Const.DRONE_STATE.DELIVERED.toString().equalsIgnoreCase(droneModel.getState())){
             dbQueryInf.updateMedicationAndDroneLoadStatus(droneModel.getId());
 

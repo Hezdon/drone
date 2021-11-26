@@ -30,15 +30,16 @@ public class DbQueryImp implements DbQueryInf {
 
     @Override
     public void updateMedicationAndDroneLoadStatus(long droneId){
-        String sql = "UPDATE drone_load dl SET dl.state = ? OUTPUT INSERTED.* WHERE dl.drone_id = ? and dl.status = ?";
+        findAllMedicationbyDrone( droneId, Const.ACTIVE).forEach( medication ->
+        {
+            jdbcTemplate.update(
+                    "UPDATE medication SET status = ? WHERE id = ?", Const.MEDICATION_STATE.OFFLOAD.toString(), medication.getId());
 
-        List<DroneLoad> droneLoads = jdbcTemplate.query(
-                sql, new Object[] { Const.INACTIVE, droneId, Const.ACTIVE}, new BeanPropertyRowMapper(DroneLoad.class));
+            jdbcTemplate.update("UPDATE drone_load SET status = ? WHERE drone_id = ? and medication_id = ? and status = ?",
+                    new Object[]{Const.INACTIVE, droneId, medication.getId(), Const.ACTIVE});
+        });
 
-        droneLoads.forEach( droneLoad ->
-        jdbcTemplate.update(
-                "UPDATE medication SET status = ? WHERE id = ?", Const.MEDICATION_STATE.OFFLOAD, droneLoad.getMedicationId())
-        );
+
 
 
     }
