@@ -94,6 +94,16 @@ public class DispatchController {
         return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @GetMapping("/battery/history")
+    public ResponseEntity<?> getDroneBatteryHistory(){
+
+        GenericResponse response = dispatchService.getDroneBatteryHistory();
+        if(Const.RESPONSECODE[0].equalsIgnoreCase(response.getResponseCode()))
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+    }
+
 
 
 }

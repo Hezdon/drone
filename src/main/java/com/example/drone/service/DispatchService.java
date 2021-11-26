@@ -174,4 +174,10 @@ public class DispatchService {
         }
     }
 
+    public GenericResponse getDroneBatteryHistory(){
+        List<BatteryHistory> batteryHistory = batteryHistoryRepo.findAll();
+
+        return new GenericResponse(Const.RESPONSECODE[0], Const.SUCCESSFUL , Const.SUCCESSFUL, batteryHistory);
+    }
+
 }
